@@ -1,8 +1,9 @@
-import { Body, ConflictException, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, ConflictException, Controller, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { User } from '../../domain/user.entity';
 import { UserService } from '../../application/user/user.service';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/create-user.dto';
+import { UserUpdateProfileDto } from '../../dto/user-update-profile.dto';
 
 @ApiTags('Usuario')
 @Controller('user')
@@ -46,5 +47,12 @@ export class UserController {
         }catch(error){
             throw new ConflictException('Error al guardar el usuario');
         }
+    }
+
+    @Patch('/update/profile/:id')
+    @ApiOperation({summary: 'Actualizacion de datos de perfil'})
+    @ApiBody({type: UserUpdateProfileDto})
+    async patchUserProfile(@Body() userData: UserUpdateProfileDto, @Param('id', ParseIntPipe) id: number){
+        return await this.userService.updateProfile(id, userData);
     }
 }
