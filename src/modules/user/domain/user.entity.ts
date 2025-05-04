@@ -6,15 +6,15 @@ export class User {
     id: number;
 
     @Column({unique: true})
-    emial: string;
+    email: string;
 
     @Column()
-    pasword: string;
+    password: string;
 
     @Column()
     fullName: string;
 
-    @Column()
+    @Column({default: true})
     isActive: boolean;
 
     @Column({nullable: true})
