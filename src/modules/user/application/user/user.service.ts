@@ -14,7 +14,7 @@ export class UserService {
         private userRepository: Repository<User>,
     ){}
 
-    private async existingUserByEmail(email: string){
+    async existingUserByEmail(email: string){
         return await this.userRepository.findOne({
             where: { email: email },
         });
