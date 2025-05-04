@@ -15,13 +15,9 @@ export class UserService {
     ){}
 
     private async existingUserByEmail(email: string){
-        const existingUser = await this.userRepository.findOne({
+        return await this.userRepository.findOne({
             where: { email: email },
         });
-      
-        if (existingUser) {
-            throw new ConflictException('El correo electrónico ya está registrado');
-        }
     }
 
     private async existingUserById(id: number){
@@ -45,11 +41,24 @@ export class UserService {
         return plainToClass(UserDataDto, user, {excludeExtraneousValues: true,});
     }
 
-    async create(createUserDto: CreateUserDto): Promise<User>{
-        this.existingUserByEmail(createUserDto.email);
+    async create(createUserDto: CreateUserDto){
+        const userData = await this.existingUserByEmail(createUserDto.email);
+
+        if(userData){
+            if(userData.isActive){
+                throw new ConflictException('El correo electrónico ya está registrado')
+            }
+            return await this.update({...userData, ...createUserDto,  isActive: true});
+        }
 
         const user = await this.userRepository.create(createUserDto);
-        return await this.userRepository.save(user);
+        const newUser = await this.userRepository.save(user);
+        return plainToClass(UserDataDto, newUser, {excludeExtraneousValues: true,});
+    }
+
+    async update(user: User){
+        const updateUser = await this.userRepository.save(user);
+        return plainToClass(UserDataDto, updateUser, {excludeExtraneousValues: true,});
     }
 
     async updateProfile(id: number, dataUser: UserUpdateProfileDto){
@@ -63,6 +72,15 @@ export class UserService {
             ...user,
             ...dataUser
         };
+        const updateUser = await this.userRepository.save(user);
+        return plainToClass(UserDataDto, updateUser, {excludeExtraneousValues: true,});
+    }
+
+    async updateActive(id: number, isActive: boolean){
+        const user = await this.existingUserById(id);
+
+        user.isActive = isActive;
+
         const updateUser = await this.userRepository.save(user);
         return plainToClass(UserDataDto, updateUser, {excludeExtraneousValues: true,});
     }

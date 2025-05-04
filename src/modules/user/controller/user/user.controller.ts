@@ -4,6 +4,7 @@ import { UserService } from '../../application/user/user.service';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UserUpdateProfileDto } from '../../dto/user-update-profile.dto';
+import { UserUpdateActivationDto } from '../../dto/user-update-activation.dto';
 
 @ApiTags('Usuario')
 @Controller('user')
@@ -38,15 +39,11 @@ export class UserController {
     @ApiOperation({summary: 'Agregar un usuario'})
     @ApiBody({type: CreateUserDto})
     async createUser(@Body() createUserDto: CreateUserDto){
-        try{
-            const user: User = await this.userService.create(createUserDto);
-            return {
-                message: 'Usuario creado correctamente',
-                data: user,
-              };
-        }catch(error){
-            throw new ConflictException('Error al guardar el usuario');
-        }
+        const user = await this.userService.create(createUserDto);
+        return {
+            message: 'Usuario creado correctamente',
+            data: user,
+            };
     }
 
     @Patch('/update/profile/:id')
@@ -54,5 +51,12 @@ export class UserController {
     @ApiBody({type: UserUpdateProfileDto})
     async patchUserProfile(@Body() userData: UserUpdateProfileDto, @Param('id', ParseIntPipe) id: number){
         return await this.userService.updateProfile(id, userData);
+    }
+
+    @Patch('/activation/:id')
+    @ApiOperation({summary: 'Actualizacion de atributo de activacion'})
+    @ApiBody({type: UserUpdateActivationDto})
+    async patchUserActive(@Param('id', ParseIntPipe) id: number, @Body() userData: UserUpdateActivationDto){
+        return this.userService.updateActive(id, userData.isActive);
     }
 }
