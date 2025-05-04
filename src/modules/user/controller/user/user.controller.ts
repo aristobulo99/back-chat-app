@@ -1,4 +1,4 @@
-import { Body, ConflictException, Controller, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, ConflictException, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { User } from '../../domain/user.entity';
 import { UserService } from '../../application/user/user.service';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -58,5 +58,11 @@ export class UserController {
     @ApiBody({type: UserUpdateActivationDto})
     async patchUserActive(@Param('id', ParseIntPipe) id: number, @Body() userData: UserUpdateActivationDto){
         return this.userService.updateActive(id, userData.isActive);
+    }
+
+    @Delete('/delete/:id')
+    @ApiOperation({summary: 'Eliminacion del usuario'})
+    async deleteUser(@Param('id', ParseIntPipe) id: number){
+        return this.userService.delete(id);
     }
 }

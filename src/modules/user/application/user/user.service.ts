@@ -84,4 +84,17 @@ export class UserService {
         const updateUser = await this.userRepository.save(user);
         return plainToClass(UserDataDto, updateUser, {excludeExtraneousValues: true,});
     }
+
+    async delete(id: number){
+        await this.existingUserById(id);
+        const result = await this.userRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException(`No se pudo eliminar el usuario con ID ${id}`);
+        }
+
+        return {
+            message: 'Usuario eliminado correctamente',
+            id,
+        };
+    }
 }

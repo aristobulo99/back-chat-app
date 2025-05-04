@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { User } from './modules/user/domain/user.entity';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { User } from './modules/user/domain/user.entity';
         synchronize: true // Activar solo en desarrollo
       }
     ),
-    UserModule
+    UserModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
