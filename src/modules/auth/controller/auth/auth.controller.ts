@@ -1,7 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from '../../services/auth/auth.service';
 import { LoginDto } from '../../dto/login.dto';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '../../core/guard/auth/auth.guard';
 
 @ApiTags('Autentificación')
 @Controller('auth')
@@ -17,5 +18,13 @@ export class AuthController {
     @Post('login')
     signIn(@Body() signInDto: LoginDto) {
     return this.authService.signIn(signInDto.email, signInDto.password);
+    }
+
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
+    @ApiOperation({summary: 'Prueba de proteccion de ruta'})
+    @Get('profile')
+    getProfile(@Request() req) {
+        return req.user;
     }
 }

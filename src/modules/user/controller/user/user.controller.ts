@@ -1,10 +1,11 @@
-import { Body, ConflictException, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
+import { Body, ConflictException, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { User } from '../../domain/user.entity';
 import { UserService } from '../../application/user/user.service';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UserUpdateProfileDto } from '../../dto/user-update-profile.dto';
 import { UserUpdateActivationDto } from '../../dto/user-update-activation.dto';
+import { AuthGuard } from 'src/modules/auth/core/guard/auth/auth.guard';
 
 @ApiTags('Usuario')
 @Controller('user')
@@ -14,6 +15,8 @@ export class UserController {
         private userService: UserService
     ){}
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
     @Get('/search/:id')
     @ApiOperation({summary: 'Obtener el usuario por id'})
     async findUserById(@Param('id') id: string){
@@ -24,6 +27,8 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
     @Get('/all')
     @ApiOperation({summary: 'Obtener todos los usuarios'})
     async findAllUsers(){
@@ -35,6 +40,8 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
     @Post('/add')
     @ApiOperation({summary: 'Agregar un usuario'})
     @ApiBody({type: CreateUserDto})
@@ -46,6 +53,8 @@ export class UserController {
             };
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
     @Patch('/update/profile/:id')
     @ApiOperation({summary: 'Actualizacion de datos de perfil'})
     @ApiBody({type: UserUpdateProfileDto})
@@ -53,6 +62,8 @@ export class UserController {
         return await this.userService.updateProfile(id, userData);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
     @Patch('/activation/:id')
     @ApiOperation({summary: 'Actualizacion de atributo de activacion'})
     @ApiBody({type: UserUpdateActivationDto})
@@ -60,6 +71,8 @@ export class UserController {
         return this.userService.updateActive(id, userData.isActive);
     }
 
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
     @Delete('/delete/:id')
     @ApiOperation({summary: 'Eliminacion del usuario'})
     async deleteUser(@Param('id', ParseIntPipe) id: number){
