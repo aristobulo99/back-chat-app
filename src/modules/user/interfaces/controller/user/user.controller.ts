@@ -40,8 +40,6 @@ export class UserController {
         }
     }
 
-    @UseGuards(AuthGuard)
-    @ApiBearerAuth('access-token')
     @Post('/add')
     @ApiOperation({summary: 'Agregar un usuario'})
     @ApiBody({type: CreateUserDto})

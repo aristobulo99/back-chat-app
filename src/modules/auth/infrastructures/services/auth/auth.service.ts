@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { EncryptionService } from 'src/core/services/encryption/encryption.service';
 import { UserService } from 'src/modules/user/application/services/user/user.service';
 import { User } from 'src/modules/user/domain/entity/user.entity';
 
@@ -7,13 +8,18 @@ import { User } from 'src/modules/user/domain/entity/user.entity';
 export class AuthService {
     constructor(
         private userService: UserService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private encrypService: EncryptionService
     ){}
 
     async signIn(email: string, pass: string){
         const user: User | null = await this.userService.existingUserByEmail(email);
+        if(!user){
+            throw new UnauthorizedException();
+        }
 
-        if (user?.password !== pass) {
+        const isPass = await this.encrypService.comparePassword(pass, user.password)
+        if (!isPass || !user.isActive) {
             throw new UnauthorizedException();
         }
 

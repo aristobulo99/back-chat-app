@@ -6,12 +6,14 @@ import { CreateUserDto } from '../../../interfaces/dto/create-user.dto';
 import { plainToClass } from 'class-transformer';
 import { UserDataDto } from '../../../interfaces/dto/user-by-id.dto';
 import { UserUpdateProfileDto } from '../../../interfaces/dto/user-update-profile.dto';
+import { EncryptionService } from 'src/core/services/encryption/encryption.service';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User)
         private userRepository: Repository<User>,
+        private encrypService: EncryptionService
     ){}
 
     async existingUserByEmail(email: string){
@@ -50,7 +52,8 @@ export class UserService {
             }
             return await this.update({...userData, ...createUserDto,  isActive: true});
         }
-
+        
+        createUserDto.password = await this.encrypService.hashPassword(createUserDto.password);
         const user = await this.userRepository.create(createUserDto);
         const newUser = await this.userRepository.save(user);
         return plainToClass(UserDataDto, newUser, {excludeExtraneousValues: true,});
