@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
-import { User } from './modules/user/domain/user.entity';
+import { User } from './modules/user/domain/entity/user.entity';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { UserChatModule } from './modules/user-chat/userChart.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { Chat } from './modules/chat/domain/chat.entity';
+import { UserChat } from './modules/user-chat/domain/userChat.entity';
 
 @Module({
   imports: [
@@ -19,12 +23,14 @@ import { ConfigModule } from '@nestjs/config';
         username: 'root',
         password: '123456789',
         database: 'chat_app',
-        entities: [User],
+        entities: [User, Chat, UserChat],
         synchronize: true // Activar solo en desarrollo
       }
     ),
     UserModule,
-    AuthModule
+    AuthModule,
+    UserChatModule,
+    ChatModule
   ],
   controllers: [],
   providers: [],

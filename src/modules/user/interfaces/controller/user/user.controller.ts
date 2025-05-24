@@ -1,11 +1,11 @@
 import { Body, ConflictException, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { User } from '../../domain/user.entity';
-import { UserService } from '../../application/user/user.service';
+import { User } from '../../../domain/entity/user.entity';
+import { UserService } from '../../../application/services/user/user.service';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from '../../dto/create-user.dto';
 import { UserUpdateProfileDto } from '../../dto/user-update-profile.dto';
 import { UserUpdateActivationDto } from '../../dto/user-update-activation.dto';
-import { AuthGuard } from 'src/modules/auth/core/guard/auth/auth.guard';
+import { AuthGuard } from 'src/core/guard/auth/auth.guard';
 
 @ApiTags('Usuario')
 @Controller('user')

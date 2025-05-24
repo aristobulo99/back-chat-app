@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthService } from '../../services/auth/auth.service';
+import { AuthService } from '../../../infrastructures/services/auth/auth.service';
 import { LoginDto } from '../../dto/login.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '../../core/guard/auth/auth.guard';
+import { AuthGuard } from '../../../../../core/guard/auth/auth.guard';
 
 @ApiTags('Autentificación')
 @Controller('auth')
