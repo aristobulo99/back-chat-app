@@ -7,6 +7,7 @@ import { UserChatService } from './application/services/user-chat/user-chat.serv
 @Module({
     imports: [TypeOrmModule.forFeature([UserChat])],
     providers: [UserChatService],
-    controllers: []
+    controllers: [],
+    exports: [UserChatService]
 })
 export class UserChatModule {}

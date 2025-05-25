@@ -8,11 +8,14 @@ export class UserChat {
     @PrimaryGeneratedColumn()
     uc_id: number;
 
+    @Column()
+    name: string;
+
     @Column({ default: Role.member })
     role: Role;
 
     @Column({ default: State.active })
-    state: State
+    state: State;
 
     @CreateDateColumn()
     startDate: Date;
