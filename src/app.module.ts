@@ -8,6 +8,8 @@ import { UserChatModule } from './modules/user-chat/userChart.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { Chat } from './modules/chat/domain/chat.entity';
 import { UserChat } from './modules/user-chat/domain/userChat.entity';
+import { Message } from './modules/message/domain/entity/message.intity';
+import { MessageModule } from './modules/message/message.module';
 
 @Module({
   imports: [
@@ -23,14 +25,15 @@ import { UserChat } from './modules/user-chat/domain/userChat.entity';
         username: 'root',
         password: '123456789',
         database: 'chat_app',
-        entities: [User, Chat, UserChat],
+        entities: [User, Chat, UserChat, Message],
         synchronize: true // Activar solo en desarrollo
       }
     ),
     UserModule,
     AuthModule,
     UserChatModule,
-    ChatModule
+    ChatModule,
+    MessageModule
   ],
   controllers: [],
   providers: [],
