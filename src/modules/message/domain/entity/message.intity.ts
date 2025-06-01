@@ -16,6 +16,9 @@ export class Message {
     @CreateDateColumn()
     issueDate: Date;
 
+    @Column({default: true})
+    active: boolean
+
     @ManyToOne(() => Chat, (chat) => chat.message)
     chat: Chat;
 }
