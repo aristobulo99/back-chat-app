@@ -18,6 +18,9 @@ export class ChatService {
         private userChatService: UserChatService
     ){}
 
+    async getChatById(chatId: number){
+        return await this.chatRepositori.findOne({where: {c_id: chatId}})
+    }
 
     async chatExistsBetweenUsers(userId1: number, userId2: number){
         return await this.chatRepositori.createQueryBuilder('chat')

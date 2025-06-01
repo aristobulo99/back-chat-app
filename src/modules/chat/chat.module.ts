@@ -14,6 +14,7 @@ import { UserChatModule } from "../user-chat/userChart.module";
         UserChatModule
     ],
     providers: [ChatService],
-    controllers: [ChatController]
+    controllers: [ChatController],
+    exports: [ChatService]
 })
 export class ChatModule {}
