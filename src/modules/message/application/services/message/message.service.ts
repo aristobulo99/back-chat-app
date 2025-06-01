@@ -24,15 +24,23 @@ export class MessageService {
         }
     }
 
+    private async validateMessageIsActive(messageId: number){
+        const existMessage = await this.getMessageById(messageId);
+        if(!existMessage || !existMessage.active){
+            throw new NotFoundException('Mensaje no encotrado');
+        }
+    }
+
     async getMessageById(messageId: number){
         return await this.messageRepository.findOneBy({m_id: messageId});
     }
 
-    async getMessageByChatId(chatId: number, userId: number){
+    async getMessageByChatId(chatId: number, userId: number, active: boolean = true){
         await this.existeChat(chatId, userId);
 
         return await this.messageRepository.createQueryBuilder('message')
             .where('message.chatCId = :chatId', { chatId })
+            .andWhere('message.active = :active', { active })
             .orderBy('message.issueDate', 'ASC')
             .getMany();
     }
@@ -57,13 +65,18 @@ export class MessageService {
     }
 
     async updateContent(updateMessage: UpdateContentMessage){
-        const existMessage = await this.getMessageById(updateMessage.messageId);
-        if(!existMessage){
-            throw new NotFoundException('Mensage no encotrado');
-        }
+        await this.validateMessageIsActive(updateMessage.messageId);
 
         await this.messageRepository.update(updateMessage.messageId, {content: updateMessage.content});
 
         return await this.getMessageById(updateMessage.messageId);
+    }
+
+    async logicalInactivationMessage(messageId: number){
+        await this.validateMessageIsActive(messageId);
+
+        await this.messageRepository.update(messageId, {active: false});
+
+        return await this.getMessageById(messageId);
     }
 }
