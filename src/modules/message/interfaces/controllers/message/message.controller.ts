@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/core/decorators/user.decorator';
 import { AuthGuard } from 'src/core/guard/auth/auth.guard';
 import { MessageService } from 'src/modules/message/application/services/message/message.service';
 import { CreateNewMessage } from '../../dto/create-new-message.dto';
+import { UpdateContentMessage } from '../../dto/update-content-message.dto';
 
 @ApiTags('Mensages')
 @Controller('message')
@@ -25,5 +26,13 @@ export class MessageController {
     @Post('newMessage')
     async postNewMessageByChat(@Body() newMessage: CreateNewMessage, @User('sub') userId: number){
         return await this.messageService.createNewMessage(userId, newMessage);
+    }
+
+    @UseGuards(AuthGuard)
+    @ApiBearerAuth('access-token')
+    @ApiOperation({summary: 'Actualizacio del contenido del mensaje'})
+    @Patch('/update-content')
+    async patchContentMessage(@Body() updateMessage: UpdateContentMessage){
+        return await this.messageService.updateContent(updateMessage);
     }
 }

@@ -4,6 +4,7 @@ import { ChatService } from 'src/modules/chat/application/services/chat/chat.ser
 import { Chat } from 'src/modules/chat/domain/chat.entity';
 import { Message } from 'src/modules/message/domain/entity/message.intity';
 import { CreateNewMessage } from 'src/modules/message/interfaces/dto/create-new-message.dto';
+import { UpdateContentMessage } from 'src/modules/message/interfaces/dto/update-content-message.dto';
 import { UserChatService } from 'src/modules/user-chat/application/services/user-chat/user-chat.service';
 import { UserChat } from 'src/modules/user-chat/domain/userChat.entity';
 import { Repository } from 'typeorm';
@@ -21,6 +22,10 @@ export class MessageService {
         if(!existChat){
             throw new ForbiddenException('El usuario no tiene ningun chat relacionado');
         }
+    }
+
+    async getMessageById(messageId: number){
+        return await this.messageRepository.findOneBy({m_id: messageId});
     }
 
     async getMessageByChatId(chatId: number, userId: number){
@@ -49,5 +54,16 @@ export class MessageService {
         );
 
         return await this.messageRepository.save(message);
+    }
+
+    async updateContent(updateMessage: UpdateContentMessage){
+        const existMessage = await this.getMessageById(updateMessage.messageId);
+        if(!existMessage){
+            throw new NotFoundException('Mensage no encotrado');
+        }
+
+        await this.messageRepository.update(updateMessage.messageId, {content: updateMessage.content});
+
+        return await this.getMessageById(updateMessage.messageId);
     }
 }
